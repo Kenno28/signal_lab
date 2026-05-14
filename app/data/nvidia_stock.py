@@ -2,7 +2,7 @@ import yfinance as yf
 from pandas import DataFrame
 import numpy as np
 from ..util.logging import AppLogger
-from ..util.utilties import normalize_yfinance_columns
+from ..util.utilities import normalize_yfinance_columns
 logger = AppLogger("Stock_Data")
 
 
@@ -40,7 +40,7 @@ def get_nvidia_stock_data() -> DataFrame | None:
     if isinstance(df, DataFrame) and validate_nvidia_stock_data(df):
         df = target_builder_nvidia_stock_data(df)
 
-        return target_builder_nvidia_stock_data(df)
+        return feature_engineer_nvidia_stock_data(df)
     else:
         logger.error("Failed to download NVIDIA stock data")
         return None
@@ -63,6 +63,9 @@ def feature_engineer_nvidia_stock_data(df: DataFrame) -> DataFrame:
 
     # Volume change
     df["volume_change"] = df["Volume"].pct_change(1)
+
+    # Order DF by datetime index
+    df = df.sort_index()
 
     # Remove rows with NaN values caused by pct_change / rolling
     df = df.dropna()
