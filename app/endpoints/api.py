@@ -29,7 +29,7 @@ def predict(data: dict):
         logger.error("Prediction failed due to invalid input or model error")
         return {"error": "Prediction failed. Check logs for details.", "code": 500 }
     
-    return {"predictions": model_predictions, "code": 200}
+    return {"signal": model_predictions["signal"], "confidence": model_predictions["combined"], "code": 200}
 
 
 # Catch any unwanted routes and return a 404 error
