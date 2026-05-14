@@ -1,8 +1,8 @@
 import joblib, os, glob
 import numpy as np
 from pandas.api.types import is_numeric_dtype
-
-from util.logging import AppLogger
+from pathlib import Path
+from ..util.logging import AppLogger
 logger = AppLogger(__name__)
 
 class ModelService:
@@ -24,16 +24,16 @@ class ModelService:
     OPTIONAL_NUMERIC_FEATURES = ("future_return",)
     FORBIDDEN_FEATURES = ("target",)
 
-    def __init__(self, models_folder_path: str = "../models/trained_models"):
+    def __init__(self, models_folder_path: Path =  Path(__file__).resolve().parents[1] / "models" / "trained_models"):
         self.models_folder_path = models_folder_path
-        self.models = []  # This will hold the loaded models
-
+        self.models = [] 
+        
     def load_models(self):
 
         if not os.path.exists(self.models_folder_path):
             raise FileNotFoundError(f"Model folder not found at {self.models_folder_path}")
         
-        model_paths = glob.glob(os.path.join(self.models_folder_path, '*.pkl'))
+        model_paths = glob.glob(os.path.join(self.models_folder_path, '*.joblib'))
 
         if not model_paths:
             raise FileNotFoundError(f"No model files found in {self.models_folder_path}")
