@@ -16,9 +16,9 @@ def train_logistic_regression(X_train, y_train, X_test, y_test):
 
     acc = accuracy_score(y_test, y_pred)
     conf_matrix = confusion_matrix(y_test, y_pred)
-    recall = recall_score(y_test, y_pred)
-    precision = precision_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred, average='macro')
+    precision = precision_score(y_test, y_pred, average='macro')
+    f1 = f1_score(y_test, y_pred, average='macro')
 
     logger.info(f"Logistic Regression Accuracy: {acc}")
     logger.info(f"Logistic Regression Confusion Matrix: \n{conf_matrix}")

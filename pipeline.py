@@ -16,7 +16,7 @@ def pipeline():
         return
     
     # Step 2: Preprocess the data (this is a placeholder, implement as needed)
-    X_train, y_train, X_test, y_test = split_time_series_data(df)
+    X_train, X_test, y_train, y_test = split_time_series_data(df)
     
     # Step 3: Train models and evaluate performance
     models = train_models(X_train, y_train, X_test, y_test)
