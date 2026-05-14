@@ -122,5 +122,12 @@ class ModelService:
         except AttributeError as e:
             logger.error(f"Model does not have a predict method: {e}")
             return None
-            
-        return model_predictions
+        
+        # combine both model predictions into a singel prediction
+        response = {}
+        response["combined"] = np.mean(list(model_predictions.values()), axis=0)
+        # 0.5 just for the beginning, we can optimize this threshold later based on the performance of the models
+        response["signal"] = np.where(response["combined"] > 0.5, "UP", "DOWN")
+        response["timeframe"] = "5m"
+        
+        return response
