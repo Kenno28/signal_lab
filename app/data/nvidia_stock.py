@@ -1,5 +1,6 @@
 import yfinance as yf
 from pandas import DataFrame
+import numpy as np
 from ..util.logging import AppLogger
 from ..util.utilties import normalize_yfinance_columns
 logger = AppLogger("Stock_Data")
@@ -37,7 +38,9 @@ def get_nvidia_stock_data() -> DataFrame | None:
     df = normalize_yfinance_columns(df)
 
     if isinstance(df, DataFrame) and validate_nvidia_stock_data(df):
-        return feature_engineer_nvidia_stock_data(df)
+        df = target_builder_nvidia_stock_data(df)
+
+        return target_builder_nvidia_stock_data(df)
     else:
         logger.error("Failed to download NVIDIA stock data")
         return None
@@ -64,4 +67,29 @@ def feature_engineer_nvidia_stock_data(df: DataFrame) -> DataFrame:
     # Remove rows with NaN values caused by pct_change / rolling
     df = df.dropna()
 
+    return df
+
+def target_builder_nvidia_stock_data(df: DataFrame, threshold: float = 0.001) -> DataFrame:
+    """Builds the target variable for NVIDIA stock data."""
+    
+    # Calculate future return for the next 5-minute candle
+    df["future_return"] = df["Close"].shift(-1) / df["Close"] - 1
+
+    # Remove rows without valid future target
+    df = df.dropna(subset=["future_return"])
+
+    # Create single target label
+    conditions = [
+        df["future_return"] > threshold,
+        df["future_return"] < -threshold
+    ]
+
+    choices = ["UP", "DOWN"]
+
+    df["target"] = np.select(
+        conditions,
+        choices,
+        default="NEUTRAL"
+    )
+    logger.info(f"Target variable created with distribution: {df['target'].value_counts().to_dict()}")
     return df
