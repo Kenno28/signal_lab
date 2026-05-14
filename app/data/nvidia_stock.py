@@ -67,6 +67,9 @@ def feature_engineer_nvidia_stock_data(df: DataFrame) -> DataFrame:
     # Order DF by datetime index
     df = df.sort_index()
 
+    # Replace inf values with NaN
+    df = df.replace([np.inf, -np.inf], np.nan)
+
     # Remove rows with NaN values caused by pct_change / rolling
     df = df.dropna()
 
