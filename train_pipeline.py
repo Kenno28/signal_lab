@@ -15,6 +15,7 @@ def pipeline():
         logger.error("Failed to fetch NVIDIA stock data. Exiting pipeline.")
         return
     
+    logger.info(f"df columns: {df.columns}")
     # Step 2: Preprocess the data (this is a placeholder, implement as needed)
     X_train, X_test, y_train, y_test = split_time_series_data(df)
     

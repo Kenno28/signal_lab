@@ -5,6 +5,6 @@ pandas
 scikit-learn
 uvicorn
 yfinance
-
+httpx
 pytest
 ruff

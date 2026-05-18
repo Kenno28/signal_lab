@@ -1,5 +1,6 @@
 import joblib, os, glob
 import numpy as np
+from collections import Counter
 from pandas.api.types import is_numeric_dtype
 from pathlib import Path
 from ..util.logging import AppLogger
@@ -108,26 +109,28 @@ class ModelService:
         """Generates predictions from the loaded models given input data X."""
 
         if not self.models:
-            raise ValueError("No models loaded. Call load_models() first.")
+            raise FileNotFoundError("No models loaded. Call load_models() first.")
 
         if not self.validate_input(X):
-            return None
+            raise ValueError("Invalid input data. Check logs for details.")
         
-        model_predictions = {}
+        model_predictions = []
 
         try:
             for model in self.models:
                 if hasattr(model, "predict"):
-                    model_predictions[type(model).__name__] = model.predict(X)
+                    model_predictions.append(model.predict(X)[0])
         except AttributeError as e:
             logger.error(f"Model does not have a predict method: {e}")
             return None
         
+        vote_counts = Counter(model_predictions)
+        final_signal = vote_counts.most_common(1)[0][0]
+        confidence = vote_counts[final_signal] / len(model_predictions)
         # combine both model predictions into a singel prediction
         response = {}
-        response["combined"] = np.mean(list(model_predictions.values()), axis=0)
-        # 0.5 just for the beginning, we can optimize this threshold later based on the performance of the models
-        response["signal"] = np.where(response["combined"] > 0.5, "UP", "DOWN")
+        response["signal"] = final_signal
+        response["confidence"] = confidence
         response["timeframe"] = "5m"
         
         return response
