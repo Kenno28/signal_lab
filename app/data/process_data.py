@@ -43,9 +43,11 @@ def process_data(file: DataFrame) -> tuple[DataFrame, DataFrame, DataFrame]:
             raise ValueError("Data contains NaN values after processing.")
         
         # add target variable for model training
-        file["target"] = file["Close"].shift(-1) - file["Close"]
 
+        file["target"] = file["Close"].shift(-1) - file["Close"]
         file = file.dropna()
+        file["target"] = file["target"].apply(lambda x: "UP" if x > 0 else "DOWN" if x < 0 else "NEUTRAL")
+
 
         # now split the date into train, validate and test sets based on a specific date
         file = file.sort_values("Date") 

@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 from ..util.logging import AppLogger
 from ..service.model_service import ModelService
 
-logger = AppLogger("API")
+logger = AppLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
