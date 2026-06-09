@@ -4,14 +4,14 @@ For V1, the project uses `yfinance` to download NVDA intraday OHLCV data.
 
 ## Selected Source
 
-- Source: Yahoo Finance via `yfinance`
+- Source: Stooq
 - Ticker: NVDA
-- Interval: 5m
-- Period: 60d
+- Interval: 1D
+- Period: from 1999
 
 ## Required Columns
 
-- timestamp
+- date
 - open
 - high
 - low
@@ -20,7 +20,5 @@ For V1, the project uses `yfinance` to download NVDA intraday OHLCV data.
 
 ## Limitations
 
-- Intraday history is limited
-- Data is not guaranteed to be complete
-- Not suitable for real trading
-- Used only for learning and V1 development
+
+- Used only for learning and development

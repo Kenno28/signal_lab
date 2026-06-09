@@ -1,12 +1,8 @@
 from pandas import DataFrame
 import pandas as pd
+from app.util.logging import AppLogger
 
-
-def normalize_yfinance_columns(df: DataFrame) -> DataFrame:
-    """Normalizes the column names of a DataFrame downloaded from yfinance."""
-    if isinstance(df.columns, pd.MultiIndex):
-        df.columns = df.columns.get_level_values(0)
-    return df
+logger = AppLogger(__name__)
 
 def create_valid_nvda_test_data() -> pd.DataFrame:
     """Creates valid NVDA test data with all required features."""
@@ -29,3 +25,36 @@ def create_valid_nvda_test_data() -> pd.DataFrame:
     }
 
     return pd.DataFrame(data)
+
+
+def load_data(file_path):
+    """
+    Load data from a CSV file.
+
+    Parameters:
+    file_path (str): The path to the CSV file.
+
+    Returns:
+    pd.DataFrame: A DataFrame containing the loaded data.
+    """
+    try:
+        data = pd.read_csv(file_path)
+        return data
+    except Exception as e:
+        logger.error(f"Error loading data from {file_path}: {e}")
+        return None
+    
+
+def load_config(config_path = "config.yaml") -> dict:
+    """Load configuration from a YAML file."""
+    import yaml
+
+    try:
+        with open(config_path, 'r') as f:
+            config = yaml.safe_load(f)
+            logger.info(f"Config loaded successfully from {config_path}")
+        return config
+    except Exception as e:
+        logger.error(f"Error loading config: {e}")
+        # Raise an exception because the config is essential for the application to run
+        raise ValueError(f"Failed to load config from {config_path}")

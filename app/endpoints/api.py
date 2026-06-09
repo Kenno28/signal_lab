@@ -65,7 +65,7 @@ def predict(data: dict):
         )
 
     if model_predictions is None:
-        logger.error("Prediction failed due to invalid input or model error")
+        logger.error("Prediction failed due to invalid model error")
         return JSONResponse(
         status_code=500,
         content={
