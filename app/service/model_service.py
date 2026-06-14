@@ -3,8 +3,12 @@ from collections import Counter
 from pathlib import Path
 from ..util.logging import AppLogger
 from ..core.exceptions import ModelNotFoundError, PredictionError
+from ..util.utilities import load_config 
 
+config = load_config()
 logger = AppLogger(__name__)
+threshold_high = config["thresholds"]["high"] 
+threshold_low = config["thresholds"]["low"]
 
 class ModelService:
     """Service class to manage loading and using machine learning models for predictions."""
@@ -113,6 +117,7 @@ class ModelService:
         response = {}
         response["signal"] = final_signal
         response["confidence"] = confidence
-        response["timeframe"] = "5m"
-        
+        response["timeframe"] = "1d"
+        response["next_signal"] = "UP" if confidence >= threshold_high else "DOWN" if confidence <= threshold_low else "NEUTRAL"
+        logger.info(f"Model predictions: {model_predictions}, Final signal: {final_signal}, Confidence: {confidence:.2f}")
         return response

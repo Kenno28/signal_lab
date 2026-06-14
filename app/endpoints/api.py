@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import pandas as pd
 from fastapi.responses import JSONResponse
+from app.core.exceptions import ModelNotFoundError, PredictionError
 from ..util.logging import AppLogger
 from ..service.model_service import ModelService
 
@@ -46,7 +47,7 @@ def predict(data: dict):
     try:
         input_df = pd.DataFrame([data])
         model_predictions = models.predict(input_df)
-    except ValueError as e:
+    except PredictionError as e:
         logger.error(f"Prediction failed due to invalid input: {e}")
         return JSONResponse(
         status_code=400,
@@ -55,7 +56,7 @@ def predict(data: dict):
         }
         )
    
-    except FileNotFoundError as e:
+    except ModelNotFoundError as e:
         logger.error(f"Prediction failed due to missing models: {e}")
         return JSONResponse(
         status_code=500,
