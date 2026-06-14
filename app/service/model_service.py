@@ -2,6 +2,8 @@ import joblib, os, glob
 from collections import Counter
 from pathlib import Path
 from ..util.logging import AppLogger
+from ..core.exceptions import ModelNotFoundError, PredictionError
+
 logger = AppLogger(__name__)
 
 class ModelService:
@@ -29,12 +31,12 @@ class ModelService:
     def load_models(self):
 
         if not os.path.exists(self.models_folder_path):
-            raise FileNotFoundError(f"Model folder not found at {self.models_folder_path}")
+            raise ModelNotFoundError(f"Model folder not found at {self.models_folder_path}")
         
         model_paths = glob.glob(os.path.join(self.models_folder_path, '*.joblib'))
 
         if not model_paths:
-            raise FileNotFoundError(f"No model files found in {self.models_folder_path}")
+            raise ModelNotFoundError(f"No model files found in {self.models_folder_path}")
         
         for model_path in model_paths:
             model = joblib.load(model_path)
@@ -89,10 +91,10 @@ class ModelService:
         """Generates predictions from the loaded models given input data X."""
 
         if not self.models:
-            raise FileNotFoundError("No models loaded. Call load_models() first.")
+            raise ModelNotFoundError("No models loaded. Call load_models() first.")
 
         if not self.validate_input(X):
-            raise ValueError("Invalid input data. Check logs for details.")
+            raise PredictionError("Invalid input data. Check logs for details.")
         
         model_predictions = []
 

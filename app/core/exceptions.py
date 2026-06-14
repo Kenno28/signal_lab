@@ -33,3 +33,11 @@ class PipelineExecutionError(Exception):
 class InvalidInputError(Exception):
     """Custom exception for invalid input data."""
     pass
+
+class DataValidationError(Exception):
+    """Custom exception for errors during data validation."""
+    pass
+
+class PredictionError(Exception):
+    """Custom exception for errors during prediction."""
+    pass

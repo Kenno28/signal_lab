@@ -2,6 +2,7 @@ import pandas as pd
 from pandas.core.frame import DataFrame
 from ..util.logging import AppLogger
 from ..util.utilities import load_data
+from ..core.exceptions import DataLoadingError, DataValidationError
 
 logger = AppLogger(__name__)
 
@@ -19,7 +20,7 @@ def process_data(file: DataFrame) -> tuple[DataFrame, DataFrame, DataFrame]:
 
     if file is None:
         logger.error("No data to process. The input file is None.")
-        raise ValueError("Input file cannot be None.")
+        raise DataValidationError("Input file cannot be None.")
 
     # Ensure all required features are present
     required_features = ["Close", "High", "Low", "Open", "Volume", "Date"]
@@ -28,7 +29,7 @@ def process_data(file: DataFrame) -> tuple[DataFrame, DataFrame, DataFrame]:
 
     if missing_features:
         logger.error(f"Missing required features: {missing_features}")
-        raise ValueError(f"Missing required features: {missing_features}")
+        raise DataValidationError(f"Missing required features: {missing_features}")
     
     try :
         # Convert 'Date' column to datetime format
@@ -40,7 +41,7 @@ def process_data(file: DataFrame) -> tuple[DataFrame, DataFrame, DataFrame]:
         # now check for any NaT values and raise an error if found
         if file.isnull().any().any():
             logger.error("Data contains NaN values after processing.")
-            raise ValueError("Data contains NaN values after processing.")
+            raise DataValidationError("Data contains NaN values after processing.")
         
         # add target variable for model training
 
@@ -57,6 +58,6 @@ def process_data(file: DataFrame) -> tuple[DataFrame, DataFrame, DataFrame]:
 
         return train, validate, test
 
-    except ValueError as e:
+    except DataValidationError as e:
         logger.error(f"Error occurred while processing dates: {e}")
         raise
