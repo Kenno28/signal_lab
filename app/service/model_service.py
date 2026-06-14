@@ -25,7 +25,7 @@ class ModelService:
         "Low",
         "Close",
         "Volume",
-        "Date"
+        # "Date"
     )
 
     FORBIDDEN_FEATURES = (
@@ -120,4 +120,5 @@ class ModelService:
         response["timeframe"] = "1d"
         response["next_signal"] = "UP" if confidence >= threshold_high else "DOWN" if confidence <= threshold_low else "NEUTRAL"
         logger.info(f"Model predictions: {model_predictions}, Final signal: {final_signal}, Confidence: {confidence:.2f}")
+        
         return response

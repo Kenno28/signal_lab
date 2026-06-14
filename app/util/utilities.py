@@ -8,10 +8,11 @@ def create_valid_nvda_test_data() -> pd.DataFrame:
     """Creates valid NVDA test data with all required features."""
 
     data = {
-        "Close": [101.0, 102.0, 103.0, 104.0, 105.0],
+        # "Date": pd.date_range(start="2026-06-01", periods=5, freq='D').astype(str),
+        "Open": [100.0, 101.0, 102.0, 103.0, 104.0],
         "High": [102.0, 103.0, 104.0, 105.0, 106.0],
         "Low": [99.0, 100.0, 101.0, 102.0, 103.0],
-        "Open": [100.0, 101.0, 102.0, 103.0, 104.0],
+        "Close": [101.0, 102.0, 103.0, 104.0, 105.0],
         "Volume": [1_000_000, 1_050_000, 1_100_000, 1_080_000, 1_120_000],
     }
 
